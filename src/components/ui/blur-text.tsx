@@ -16,6 +16,7 @@ interface BlurTextProps {
   easing?: Easing | Easing[];
   onAnimationComplete?: () => void;
   stepDuration?: number;
+  spanStyle?: React.CSSProperties;
 }
 
 function buildKeyframes(
@@ -46,6 +47,7 @@ export default function BlurText({
   easing = (t: number) => t,
   onAnimationComplete,
   stepDuration = 0.35,
+  spanStyle,
 }: BlurTextProps) {
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const [inView, setInView] = useState(false);
@@ -121,6 +123,7 @@ export default function BlurText({
             style={{
               display: "inline-block",
               willChange: "transform, filter, opacity",
+              ...spanStyle,
             }}
           >
             {segment === " " ? "\u00A0" : segment}

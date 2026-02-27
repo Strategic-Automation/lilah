@@ -85,7 +85,7 @@ export function Hero() {
           />
           <BlurText
             text="remember everything"
-            className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] justify-center gradient-text"
+            className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] justify-center"
             delay={80}
             direction="bottom"
             stepDuration={0.4}
@@ -94,6 +94,12 @@ export function Hero() {
               { filter: "blur(6px)", opacity: 0.5, y: -3 },
               { filter: "blur(0px)", opacity: 1, y: 0 },
             ]}
+            spanStyle={{
+              background: "var(--gradient-brand)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
           />
         </div>
 
