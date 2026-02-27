@@ -1,5 +1,9 @@
+"use client";
+
 import { FEATURES } from "@/lib/constants";
 import { AnimateOnScroll } from "./animate-on-scroll";
+import BlurText from "@/components/ui/blur-text";
+import SpotlightCard from "@/components/ui/spotlight-card";
 
 function FeatureIcon({ icon }: { icon: string }) {
   const icons: Record<string, React.ReactNode> = {
@@ -71,36 +75,31 @@ export function Features() {
       />
 
       <div className="relative mx-auto max-w-6xl px-6">
-        <AnimateOnScroll className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Everything happens <span className="gradient-text">in real time</span>
-          </h2>
+        <div className="text-center mb-16">
+          <BlurText
+            text="Everything happens in real time"
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-4 justify-center"
+            delay={60}
+            direction="bottom"
+          />
           <p className="mx-auto max-w-2xl text-text-secondary text-lg">
             While you focus on the conversation, Lilah handles everything else —
             from transcription to insights to follow-ups.
           </p>
-        </AnimateOnScroll>
+        </div>
 
-        {/* Bento Grid */}
+        {/* Bento Grid with SpotlightCards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {FEATURES.map((feature, i) => (
             <AnimateOnScroll
               key={feature.title}
               delay={i * 80}
-              className={
-                feature.span === "wide" ? "md:col-span-2" : ""
-              }
+              className={feature.span === "wide" ? "md:col-span-2" : ""}
             >
-              <div className="group relative h-full glass rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-border-bright hover:-translate-y-1">
-                {/* Card glow on hover */}
-                <div
-                  className="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: "radial-gradient(circle, rgba(124,58,237,0.2), transparent 70%)",
-                    filter: "blur(30px)",
-                  }}
-                  aria-hidden="true"
-                />
+              <SpotlightCard
+                className="h-full glass rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-border-bright hover:-translate-y-1"
+                spotlightColor="rgba(124, 58, 237, 0.12)"
+              >
                 <div className="relative">
                   <FeatureIcon icon={feature.icon} />
                   <h3 className="text-lg font-semibold text-text-primary mb-2">
@@ -110,7 +109,7 @@ export function Features() {
                     {feature.description}
                   </p>
                 </div>
-              </div>
+              </SpotlightCard>
             </AnimateOnScroll>
           ))}
         </div>

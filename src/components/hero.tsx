@@ -1,35 +1,34 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import BlurText from "@/components/ui/blur-text";
+import ShinyText from "@/components/ui/shiny-text";
+
+const Aurora = dynamic(() => import("@/components/ui/aurora"), { ssr: false });
+
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Background glows */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        {/* Violet glow */}
-        <div
-          className="absolute -top-32 -left-32 h-[600px] w-[600px] rounded-full animate-glow-pulse"
-          style={{
-            background: "radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%)",
-            filter: "blur(120px)",
-          }}
-        />
-        {/* Cyan glow */}
-        <div
-          className="absolute -bottom-48 -right-32 h-[500px] w-[500px] rounded-full animate-glow-pulse"
-          style={{
-            background: "radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)",
-            filter: "blur(100px)",
-            animationDelay: "2s",
-          }}
-        />
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
+      {/* Aurora background */}
+      <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden="true">
+        <Aurora
+          colorStops={["#7C3AED", "#06B6D4", "#7C3AED"]}
+          amplitude={1.2}
+          blend={0.6}
+          speed={0.8}
         />
       </div>
+
+      {/* Grid pattern overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
       {/* Floating particles */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -66,27 +65,47 @@ export function Hero() {
             className="inline-block h-2 w-2 rounded-full"
             style={{ background: "var(--gradient-brand)" }}
           />
-          <span className="text-xs font-medium text-text-secondary">
-            Now in Early Access
-          </span>
+          <ShinyText
+            text="Now in Early Access"
+            className="text-xs font-medium"
+            color="#64748B"
+            shineColor="#F8FAFC"
+            speed={4}
+          />
         </div>
 
-        {/* Headline */}
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
-          Your meetings
-          <br />
-          <span className="gradient-text">remember everything</span>
-        </h1>
+        {/* Headline with BlurText */}
+        <div className="mb-6">
+          <BlurText
+            text="Your meetings"
+            className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] justify-center"
+            delay={80}
+            direction="bottom"
+            stepDuration={0.4}
+          />
+          <BlurText
+            text="remember everything"
+            className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.08] justify-center gradient-text"
+            delay={80}
+            direction="bottom"
+            stepDuration={0.4}
+            animationFrom={{ filter: "blur(12px)", opacity: 0, y: 20 }}
+            animationTo={[
+              { filter: "blur(6px)", opacity: 0.5, y: -3 },
+              { filter: "blur(0px)", opacity: 1, y: 0 },
+            ]}
+          />
+        </div>
 
         {/* Subheadline */}
-        <p className="mx-auto max-w-2xl text-lg md:text-xl text-text-secondary leading-relaxed mb-10">
+        <p className="mx-auto max-w-2xl text-lg md:text-xl text-text-secondary leading-relaxed mb-10 animate-fade-in" style={{ animationDelay: "0.6s" }}>
           Lilah is the invisible AI that transcribes, analyses, and extracts
           every insight from your conversations — in real time, without anyone
           knowing.
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: "0.9s" }}>
           <a
             href="#waitlist"
             className="rounded-full px-8 py-3.5 text-base font-medium text-white transition-all hover:opacity-90 hover:shadow-[0_0_40px_rgba(124,58,237,0.3)]"

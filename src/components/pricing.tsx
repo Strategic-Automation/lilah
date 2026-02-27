@@ -1,5 +1,9 @@
+"use client";
+
 import { PRICING_PLANS } from "@/lib/constants";
 import { AnimateOnScroll } from "./animate-on-scroll";
+import BlurText from "@/components/ui/blur-text";
+import StarBorder from "@/components/ui/star-border";
 
 function CheckIcon({ muted }: { muted?: boolean }) {
   return (
@@ -25,27 +29,28 @@ export function Pricing() {
   return (
     <section id="pricing" className="py-24 md:py-32">
       <div className="mx-auto max-w-4xl px-6">
-        <AnimateOnScroll className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Simple, <span className="gradient-text">honest pricing</span>
-          </h2>
+        <div className="text-center mb-16">
+          <BlurText
+            text="Simple, honest pricing"
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-4 justify-center"
+            delay={60}
+            direction="bottom"
+          />
           <p className="mx-auto max-w-xl text-text-secondary text-lg">
             Start free. Upgrade when you&apos;re ready. No surprises.
           </p>
-        </AnimateOnScroll>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {PRICING_PLANS.map((plan, i) => (
             <AnimateOnScroll key={plan.name} delay={i * 150}>
               {plan.highlighted ? (
-                /* Pro card with animated gradient border */
-                <div
-                  className="relative rounded-2xl p-[1px] overflow-hidden"
-                  style={{
-                    background: "linear-gradient(135deg, #7C3AED, #06B6D4, #8B5CF6, #7C3AED)",
-                    backgroundSize: "300% 300%",
-                    animation: "gradient-x 6s ease infinite",
-                  }}
+                /* Pro card with StarBorder */
+                <StarBorder
+                  className="w-full"
+                  color="#7C3AED"
+                  speed="5s"
+                  thickness={1}
                 >
                   <div className="relative rounded-2xl bg-bg-card p-8">
                     {/* Popular badge */}
@@ -95,7 +100,7 @@ export function Pricing() {
                       </a>
                     </div>
                   </div>
-                </div>
+                </StarBorder>
               ) : (
                 /* Free card */
                 <div className="glass rounded-2xl p-8 h-full flex flex-col">
