@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { HOW_IT_WORKS_STEPS } from "@/lib/constants";
 import { AnimateOnScroll } from "./animate-on-scroll";
 import BlurText from "@/components/ui/blur-text";
@@ -77,6 +78,21 @@ export function HowItWorks() {
             </div>
           ))}
         </div>
+
+        {/* Report generation visual */}
+        <AnimateOnScroll delay={400}>
+          <div className="mt-16 flex justify-center">
+            <div className="max-w-sm rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-violet/10">
+              <Image
+                src="/images/generate-report.png"
+                alt="End meeting and generate report dialog with options for Executive Summary, Detailed Minutes, Key Findings, and Follow-up Questions"
+                width={640}
+                height={520}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+        </AnimateOnScroll>
       </div>
     </section>
   );

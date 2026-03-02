@@ -1,110 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useIntersection } from "@/lib/hooks/use-intersection";
 
-function AudioBars({ active }: { active: boolean }) {
-  const heights = [40, 70, 55, 85, 45, 90, 60, 75, 50, 80, 65, 35];
-  return (
-    <div className="flex items-end justify-center gap-1 h-24">
-      {heights.map((h, i) => (
-        <div
-          key={i}
-          className={`w-1 rounded-full transition-all duration-500 ${
-            active ? "animate-bar-pulse" : "opacity-0"
-          }`}
-          style={{
-            height: `${h}%`,
-            background: "var(--gradient-brand)",
-            animationDelay: `${i * 0.1}s`,
-            animationDuration: `${0.8 + (i % 3) * 0.3}s`,
-            transitionDelay: `${i * 50}ms`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function TranscriptLines({ active }: { active: boolean }) {
-  const widths = [85, 70, 90, 60, 75];
-  return (
-    <div className="flex flex-col gap-2.5 justify-center h-24">
-      {widths.map((w, i) => (
-        <div
-          key={i}
-          className={`h-2 rounded-full bg-white/10 transition-all duration-700 origin-left ${
-            active ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
-          }`}
-          style={{
-            width: `${w}%`,
-            transitionDelay: `${400 + i * 120}ms`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function InsightCards({ active }: { active: boolean }) {
-  const cards = [
-    { label: "Action Item", color: "#7C3AED" },
-    { label: "Key Insight", color: "#06B6D4" },
-    { label: "Follow-up", color: "#8B5CF6" },
-  ];
-  return (
-    <div className="flex flex-col gap-2.5 justify-center">
-      {cards.map((card, i) => (
-        <div
-          key={card.label}
-          className={`glass rounded-lg px-4 py-2.5 flex items-center gap-2.5 transition-all duration-500 ${
-            active
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: `${800 + i * 150}ms` }}
-        >
-          <span
-            className="h-2 w-2 rounded-full flex-shrink-0"
-            style={{ backgroundColor: card.color }}
-          />
-          <span className="text-xs text-text-secondary whitespace-nowrap">
-            {card.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function FlowArrow({ active, delay }: { active: boolean; delay: number }) {
-  return (
-    <div
-      className={`hidden md:flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
-        active ? "opacity-60" : "opacity-0"
-      }`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M5 12h14M13 6l6 6-6 6"
-          stroke="url(#arrow-grad)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <defs>
-          <linearGradient id="arrow-grad" x1="5" y1="12" x2="19" y2="12">
-            <stop stopColor="#7C3AED" />
-            <stop offset="1" stopColor="#06B6D4" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  );
-}
-
 export function DemoVisual() {
-  const { ref, isVisible } = useIntersection({ threshold: 0.2 });
+  const { ref, isVisible } = useIntersection({ threshold: 0.15 });
 
   return (
     <section className="relative py-24 md:py-32">
@@ -128,36 +28,40 @@ export function DemoVisual() {
           </p>
         </div>
 
+        {/* Browser frame with screenshot */}
         <div
           ref={ref}
-          className="glass rounded-3xl p-8 md:p-12"
+          className={`transition-all duration-1000 ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-8"
+          }`}
         >
-          {/* Labels */}
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-6 md:gap-4 items-center">
-            <div>
-              <p className="text-xs text-text-muted uppercase tracking-wider mb-4 text-center">
-                Audio Input
-              </p>
-              <AudioBars active={isVisible} />
+          <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-violet/10">
+            {/* Browser chrome bar */}
+            <div className="flex items-center gap-2 bg-white/[0.04] px-4 py-3 border-b border-white/[0.06]">
+              <div className="flex gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
+                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
+                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="rounded-md bg-white/[0.04] px-4 py-1 text-[11px] text-text-muted w-64 text-center">
+                  app.lilah.app
+                </div>
+              </div>
+              <div className="w-12" />
             </div>
 
-            <FlowArrow active={isVisible} delay={300} />
-
-            <div>
-              <p className="text-xs text-text-muted uppercase tracking-wider mb-4 text-center">
-                Live Transcription
-              </p>
-              <TranscriptLines active={isVisible} />
-            </div>
-
-            <FlowArrow active={isVisible} delay={600} />
-
-            <div>
-              <p className="text-xs text-text-muted uppercase tracking-wider mb-4 text-center">
-                AI Insights
-              </p>
-              <InsightCards active={isVisible} />
-            </div>
+            {/* Screenshot */}
+            <Image
+              src="/images/live-meeting-dashboard.png"
+              alt="Lilah live meeting dashboard showing real-time transcription, AI insights, and meeting context"
+              width={1920}
+              height={1080}
+              className="w-full h-auto"
+              priority
+            />
           </div>
         </div>
       </div>

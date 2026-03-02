@@ -1,53 +1,5 @@
+import Image from "next/image";
 import { AnimateOnScroll } from "./animate-on-scroll";
-
-function MockInterviewUI() {
-  return (
-    <div className="glass rounded-2xl p-6 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-red-400 animate-glow-pulse" />
-          <span className="text-xs text-text-muted">Interview Mode Active</span>
-        </div>
-        <span className="text-xs text-cyan">Live</span>
-      </div>
-
-      {/* Speaker lines */}
-      <div className="space-y-3">
-        <div className="flex gap-3 items-start">
-          <span className="flex-shrink-0 mt-1 h-6 w-6 rounded-full bg-violet/20 flex items-center justify-center text-[10px] text-violet-light font-medium">
-            C
-          </span>
-          <div className="space-y-1.5 flex-1">
-            <div className="h-2 rounded-full bg-white/8 w-full" />
-            <div className="h-2 rounded-full bg-white/8 w-3/4" />
-          </div>
-        </div>
-        <div className="flex gap-3 items-start">
-          <span className="flex-shrink-0 mt-1 h-6 w-6 rounded-full bg-cyan/20 flex items-center justify-center text-[10px] text-cyan-light font-medium">
-            Y
-          </span>
-          <div className="space-y-1.5 flex-1">
-            <div className="h-2 rounded-full bg-white/8 w-5/6" />
-            <div className="h-2 rounded-full bg-white/8 w-2/3" />
-          </div>
-        </div>
-      </div>
-
-      {/* Insight cards */}
-      <div className="border-t border-border pt-3 space-y-2">
-        <div className="glass rounded-lg px-3 py-2 flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[11px] text-text-secondary">Strong technical depth — probe further on system design</span>
-        </div>
-        <div className="glass rounded-lg px-3 py-2 flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-          <span className="text-[11px] text-text-secondary">Suggested: Ask about team collaboration experience</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function InterviewSpotlight() {
   return (
@@ -115,9 +67,17 @@ export function InterviewSpotlight() {
             </div>
           </AnimateOnScroll>
 
-          {/* Mock UI */}
+          {/* Product screenshot */}
           <AnimateOnScroll delay={200}>
-            <MockInterviewUI />
+            <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-violet/10">
+              <Image
+                src="/images/start-new-meeting.png"
+                alt="Lilah start new meeting screen with Standard Meeting, Job Interview Candidate, Job Interview Interviewer, and Conference modes"
+                width={1280}
+                height={480}
+                className="w-full h-auto"
+              />
+            </div>
           </AnimateOnScroll>
         </div>
       </div>
