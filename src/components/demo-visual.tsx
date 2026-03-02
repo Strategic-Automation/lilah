@@ -28,7 +28,7 @@ export function DemoVisual() {
           </p>
         </div>
 
-        {/* Browser frame with screenshot */}
+        {/* Browser frame with live meeting screenshot */}
         <div
           ref={ref}
           className={`transition-all duration-1000 ${
@@ -61,6 +61,25 @@ export function DemoVisual() {
               height={1080}
               className="w-full h-auto"
               priority
+            />
+          </div>
+        </div>
+
+        {/* End meeting / report generation screenshot */}
+        <div
+          className={`mt-12 flex justify-center transition-all duration-1000 delay-300 ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="max-w-sm rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-violet/10">
+            <Image
+              src="/images/generate-report.png"
+              alt="End meeting and generate report dialog with options for Executive Summary, Detailed Minutes, Key Findings, and Follow-up Questions"
+              width={640}
+              height={520}
+              className="w-full h-auto"
             />
           </div>
         </div>

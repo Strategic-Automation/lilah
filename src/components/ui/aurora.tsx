@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
 
 const VERT = `#version 300 es
@@ -114,27 +114,45 @@ export default function Aurora({
 }: AuroraProps) {
   const ctnRef = useRef<HTMLDivElement>(null);
   const propsRef = useRef({ colorStops, amplitude, blend, speed });
+  const [failed, setFailed] = useState(false);
   propsRef.current = { colorStops, amplitude, blend, speed };
 
   useEffect(() => {
     const ctn = ctnRef.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: true,
-    });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = "transparent";
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let renderer: Renderer | null = null;
+    let gl: any = null;
     let program: Program | undefined;
+    let animateId = 0;
+
+    try {
+      // Test for WebGL2 support first
+      const testCanvas = document.createElement("canvas");
+      const testCtx = testCanvas.getContext("webgl2");
+      if (!testCtx) {
+        setFailed(true);
+        return;
+      }
+
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: true,
+      });
+      gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.canvas.style.backgroundColor = "transparent";
+    } catch {
+      setFailed(true);
+      return;
+    }
 
     function resize() {
-      if (!ctn) return;
+      if (!ctn || !renderer) return;
       const width = ctn.offsetWidth;
       const height = ctn.offsetHeight;
       renderer.setSize(width, height);
@@ -144,60 +162,83 @@ export default function Aurora({
     }
     window.addEventListener("resize", resize);
 
-    const geometry = new Triangle(gl);
-    if (geometry.attributes.uv) {
-      delete (geometry.attributes as Record<string, unknown>).uv;
-    }
-
-    const colorStopsArray = propsRef.current.colorStops.map((hex) => {
-      const c = new Color(hex);
-      return [c.r, c.g, c.b];
-    });
-
-    program = new Program(gl, {
-      vertex: VERT,
-      fragment: FRAG,
-      uniforms: {
-        uTime: { value: 0 },
-        uAmplitude: { value: amplitude },
-        uColorStops: { value: colorStopsArray },
-        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uBlend: { value: blend },
-      },
-    });
-
-    const mesh = new Mesh(gl, { geometry, program });
-    ctn.appendChild(gl.canvas);
-
-    let animateId = 0;
-    const update = (t: number) => {
-      animateId = requestAnimationFrame(update);
-      if (program) {
-        program.uniforms.uTime.value =
-          t * 0.01 * (propsRef.current.speed ?? 1.0) * 0.1;
-        program.uniforms.uAmplitude.value =
-          propsRef.current.amplitude ?? 1.0;
-        program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
-        const stops = propsRef.current.colorStops;
-        program.uniforms.uColorStops.value = stops.map((hex: string) => {
-          const c = new Color(hex);
-          return [c.r, c.g, c.b];
-        });
-        renderer.render({ scene: mesh });
+    try {
+      const geometry = new Triangle(gl);
+      if (geometry.attributes.uv) {
+        delete (geometry.attributes as Record<string, unknown>).uv;
       }
-    };
-    animateId = requestAnimationFrame(update);
-    resize();
+
+      const colorStopsArray = propsRef.current.colorStops.map((hex) => {
+        const c = new Color(hex);
+        return [c.r, c.g, c.b];
+      });
+
+      program = new Program(gl, {
+        vertex: VERT,
+        fragment: FRAG,
+        uniforms: {
+          uTime: { value: 0 },
+          uAmplitude: { value: amplitude },
+          uColorStops: { value: colorStopsArray },
+          uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+          uBlend: { value: blend },
+        },
+      });
+
+      const mesh = new Mesh(gl, { geometry, program });
+      ctn.appendChild(gl.canvas);
+
+      const update = (t: number) => {
+        animateId = requestAnimationFrame(update);
+        if (program) {
+          program.uniforms.uTime.value =
+            t * 0.01 * (propsRef.current.speed ?? 1.0) * 0.1;
+          program.uniforms.uAmplitude.value =
+            propsRef.current.amplitude ?? 1.0;
+          program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+          const stops = propsRef.current.colorStops;
+          program.uniforms.uColorStops.value = stops.map((hex: string) => {
+            const c = new Color(hex);
+            return [c.r, c.g, c.b];
+          });
+          renderer.render({ scene: mesh });
+        }
+      };
+      animateId = requestAnimationFrame(update);
+      resize();
+    } catch {
+      setFailed(true);
+      window.removeEventListener("resize", resize);
+      try {
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+      } catch { /* swallow */ }
+      return;
+    }
 
     return () => {
       cancelAnimationFrame(animateId);
       window.removeEventListener("resize", resize);
-      if (ctn && gl.canvas.parentNode === ctn) {
-        ctn.removeChild(gl.canvas);
-      }
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      try {
+        if (ctn && gl.canvas && gl.canvas.parentNode === ctn) {
+          ctn.removeChild(gl.canvas);
+        }
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+      } catch { /* swallow cleanup errors */ }
     };
   }, [amplitude, blend]);
+
+  // CSS fallback when WebGL fails
+  if (failed) {
+    return (
+      <div
+        className="w-full h-full"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 80%, rgba(124,58,237,0.25) 0%, rgba(6,182,212,0.15) 40%, transparent 70%)",
+        }}
+      />
+    );
+  }
 
   return <div ref={ctnRef} className="w-full h-full" />;
 }
