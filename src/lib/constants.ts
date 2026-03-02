@@ -80,7 +80,8 @@ export const FEATURES: Feature[] = [
 
 export interface PricingPlan {
   name: string;
-  price: string;
+  priceUSD: number;
+  yearlyPriceUSD: number;
   period: string;
   description: string;
   features: string[];
@@ -91,7 +92,8 @@ export interface PricingPlan {
 export const PRICING_PLANS: PricingPlan[] = [
   {
     name: "Free",
-    price: "$0",
+    priceUSD: 0,
+    yearlyPriceUSD: 0,
     period: "forever",
     description: "Get started with the essentials",
     features: [
@@ -106,7 +108,8 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
   {
     name: "Pro",
-    price: "$14.99",
+    priceUSD: 14.99,
+    yearlyPriceUSD: 149,
     period: "/month",
     description: "Everything you need to own every meeting",
     features: [

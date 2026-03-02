@@ -1,6 +1,7 @@
 "use client";
 
 import { PRICING_PLANS } from "@/lib/constants";
+import { useCurrency } from "@/lib/hooks/use-currency";
 import { AnimateOnScroll } from "./animate-on-scroll";
 import BlurText from "@/components/ui/blur-text";
 import StarBorder from "@/components/ui/star-border";
@@ -26,6 +27,8 @@ function CheckIcon({ muted }: { muted?: boolean }) {
 }
 
 export function Pricing() {
+  const { formatPrice } = useCurrency();
+
   return (
     <section id="pricing" className="py-24 md:py-32">
       <div className="mx-auto max-w-4xl px-6">
@@ -70,15 +73,17 @@ export function Pricing() {
                       </p>
                       <div className="flex items-baseline gap-1 mb-1">
                         <span className="text-4xl font-bold gradient-text">
-                          {plan.price}
+                          {formatPrice(plan.priceUSD)}
                         </span>
                         <span className="text-text-muted text-sm">
                           {plan.period}
                         </span>
                       </div>
-                      <p className="text-xs text-text-muted mb-8">
-                        or $149/year — save 17%
-                      </p>
+                      {plan.yearlyPriceUSD > 0 && (
+                        <p className="text-xs text-text-muted mb-8">
+                          or {formatPrice(plan.yearlyPriceUSD)}/year — save 17%
+                        </p>
+                      )}
 
                       <ul className="space-y-3 mb-8">
                         {plan.features.map((f) => (
@@ -112,7 +117,7 @@ export function Pricing() {
                   </p>
                   <div className="flex items-baseline gap-1 mb-8">
                     <span className="text-4xl font-bold text-text-primary">
-                      {plan.price}
+                      {formatPrice(plan.priceUSD)}
                     </span>
                     <span className="text-text-muted text-sm">
                       {plan.period}
