@@ -26,7 +26,7 @@ export function Footer() {
             ))}
             <span className="hidden md:inline text-border">|</span>
             <a
-              href="#"
+              href="/privacy"
               className="text-sm text-text-muted hover:text-text-secondary transition-colors"
             >
               Privacy
